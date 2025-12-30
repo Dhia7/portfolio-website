@@ -19,8 +19,7 @@ import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import styles from '../styles/Home.module.css';
 import AnimatedSection from '../components/AnimatedSection';
 import TypingEffect from '../components/TypingEffect';
-import DarkVeil from '../components/DarkVeil';
-import Image from 'next/image';
+import ThemeToggle from '../components/ThemeToggle';
 
 
 export default function Home() {
@@ -34,42 +33,6 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('about');
   const [isVisible, setIsVisible] = useState(false);
   const isNavigatingRef = useRef(false);
-  const [heroTilt, setHeroTilt] = useState({ x: 0, y: 0 });
-  const heroTextRef = useRef(null);
-  const [showAllTech, setShowAllTech] = useState(false);
-  
-  const allTechnologies = ['Javascript(ES6+)','TypeScript', 'PostgreSQL', 'MongoDB', 'Express.js', 'Git/GitHub', 'Docker', 'CI/CD', 'Redux', 'Tailwind CSS', 'JWT', 'REST APIs', 'Vercel'];
-  const initialTechCount = 5;
-  const displayedTech = showAllTech ? allTechnologies : allTechnologies.slice(0, initialTechCount);
-
-  // Handle hero text tilt effect
-  const handleHeroMouseMove = (e) => {
-    if (!heroTextRef.current) return;
-    
-    const rect = heroTextRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Reduced sensitivity for slower movement (divided by 20 instead of 10)
-    const rotateX = (y - centerY) / 20;
-    const rotateY = (centerX - x) / 20;
-    
-    setHeroTilt({ x: rotateX, y: rotateY });
-  };
-
-  const handleHeroMouseLeave = () => {
-    setHeroTilt({ x: 0, y: 0 });
-  };
-
-  // Apply tilt transform to hero text
-  useEffect(() => {
-    if (heroTextRef.current) {
-      heroTextRef.current.style.transform = `perspective(1000px) rotateX(${heroTilt.x}deg) rotateY(${heroTilt.y}deg)`;
-    }
-  }, [heroTilt]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -155,10 +118,7 @@ export default function Home() {
  
     
   const handleNavClick = (sectionId, e) => {
-    // Prevent default if event object has preventDefault
-    if (e && typeof e.preventDefault === 'function') {
-      e.preventDefault();
-    }
+    e.preventDefault();
     
     // Set flag to prevent scroll detection from interfering
     isNavigatingRef.current = true;
@@ -180,27 +140,24 @@ export default function Home() {
       return;
     }
     
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-      const targetSection = document.getElementById(sectionId);
-      if (targetSection) {
-        const offset = 80; // Navbar height
-        const targetPosition = targetSection.getBoundingClientRect().top + window.scrollY - offset;
-        
-        // Smooth scroll
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-        
-        // Clear navigation flag after scroll animation completes
-        setTimeout(() => {
-          isNavigatingRef.current = false;
-        }, 1000);
-      } else {
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+      const offset = 80; // Navbar height
+      const targetPosition = targetSection.getBoundingClientRect().top + window.scrollY - offset;
+      
+      // Smooth scroll
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+      
+      // Clear navigation flag after scroll animation completes
+      setTimeout(() => {
         isNavigatingRef.current = false;
-      }
-    });
+      }, 1000);
+    } else {
+      isNavigatingRef.current = false;
+    }
   };
 
 
@@ -210,10 +167,12 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Dhia Eddine Naija - Portfolio</title>
-        <meta name="description" content="Full Stack Developer with 3+ years experience" />
-        <link rel="icon" href="/portfolioIcon.png" />
-        <link rel="apple-touch-icon" href="/portfolioIcon.png" />
+        <title>Dhia Eddine Naija - Professional CV</title>
+        <meta name="description" content="Full Stack Developer with 5+ years experience" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#2c3e50" />
       </Head>
@@ -253,6 +212,14 @@ export default function Home() {
               </button>
             </motion.li>
           ))}
+          <motion.li
+            className={styles.navItem}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: navigationSections.length * 0.1, duration: 0.5 }}
+          >
+            <ThemeToggle />
+          </motion.li>
         </ul>
       </motion.nav>
 
@@ -262,37 +229,8 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
-          <DarkVeil
-            speed={3}
-            scanlineFrequency={0.5}
-            warpAmount={5}
-          />
-        </div>
   <div className={styles.heroContent}>
-    <div 
-      ref={heroTextRef}
-      className={styles.heroText}
-      onMouseMove={handleHeroMouseMove}
-      onMouseLeave={handleHeroMouseLeave}
-    >
-            <motion.div
-              className={styles.heroProfileImage}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            >
-              <Image
-                src="/profile-image.png"
-                alt="Dhia Eddine Naija"
-                width={200}
-                height={200}
-                className={styles.heroImage}
-                unoptimized
-                priority
-                sizes="(max-width: 479px) 120px, (max-width: 767px) 160px, (max-width: 1023px) 180px, 200px"
-              />
-            </motion.div>
+    <div className={styles.heroText}>
             <TypingEffect 
               text="Dhia Eddine Naija"
               className={styles.heroTitle}
@@ -315,7 +253,7 @@ export default function Home() {
             >
         <p>Specializing in modern web development with React, Node.js, and Next.js</p>
         <div className={styles.techStack}>
-                {displayedTech.map((tech, index) => (
+                {['JavaScript', 'TypeScript', 'React.js', 'Node.js', 'Next.js'].map((tech, index) => (
                   <motion.span
                     key={tech}
                     className={styles.techPill}
@@ -327,32 +265,6 @@ export default function Home() {
                     {tech}
                   </motion.span>
                 ))}
-                {!showAllTech && allTechnologies.length > initialTechCount && (
-                  <motion.button
-                    className={styles.techPill}
-                    onClick={() => setShowAllTech(true)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 + initialTechCount * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    style={{ cursor: 'pointer', border: '1px solid rgba(46, 204, 113, 0.3)' }}
-                  >
-                    ...
-                  </motion.button>
-                )}
-                {showAllTech && (
-                  <motion.button
-                    className={styles.techPill}
-                    onClick={() => setShowAllTech(false)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 + allTechnologies.length * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    style={{ cursor: 'pointer', border: '1px solid rgba(46, 204, 113, 0.3)' }}
-                  >
-                    Show Less
-                  </motion.button>
-                )}
               </div>
             </motion.div>
           </div>
