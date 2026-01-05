@@ -547,21 +547,21 @@ export default function Home() {
                 title: "Dashboard Platform",
                 url: "https://nextjs-dashboard-projects.vercel.app/",
                 description: "A full-stack Dashboard solution built with Next.js",
-                tech: ["React", "Typescript", "Tailwind CSS", "Vercel/postgres"],
+                tech: ["React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
                 github: "https://github.com/Dhia7/nextjs-dashboard"
               },
               {
-                title: "Technotes project",
-                url: "https://technotes-kd2z.onrender.com/",
-                description: "A MernStack application focused on backend API's.",
-                tech: ["MongoDB", "Express", "React", "Node.js", "reduxJs", "Jwt-decode"],
-                github: "https://github.com/Dhia7/technotes"
+                title: "Aesthetic Training Academy",
+                url: "https://forma-beauty-international-academy-theta.vercel.app/",
+                description: "Responsive website for an aesthetic training academy with a focus on contact and user engagement.",
+                tech: ["Vite", "WebGL", "shadcn/ui", "HTML5/CSS3", "Vercel"],
+                github: "https://github.com/Dhia7/forma-beauty-international-academy"
               },
               {
                 title: "Ecommerce Website",
                 url: "https://weary-iota.vercel.app/",
                 description: "A eCommerce website built with Next.js and other technologies.",
-                tech: ["Next.js", "React", "Typescript", "Tailwind CSS", "Vercel/postgres"],
+                tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
                 github: "https://github.com/Dhia7/weary"
               }
             ].map((project, index) => (
@@ -576,7 +576,7 @@ export default function Home() {
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
                 <a
-                  href={project.url}
+                  href={project.github}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.projectTitleLink}
@@ -596,7 +596,7 @@ export default function Home() {
                   ))}
               </div>
                 <motion.a  
-                  href={project.github}
+                  href={project.url}
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className={styles.projectLink}
