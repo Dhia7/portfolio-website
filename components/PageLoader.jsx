@@ -2,6 +2,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import styles from '../styles/PageLoader.module.css';
+import DarkVeil from './DarkVeil';
+import Image from 'next/image';
 
 export default function PageLoader({ onLoadComplete }) {
   const [progress, setProgress] = useState(0);
@@ -144,46 +146,55 @@ export default function PageLoader({ onLoadComplete }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       >
-        <div className={styles.loaderBackground} />
+        <div className={styles.loaderBackground}>
+          <DarkVeil
+            speed={3}
+            scanlineFrequency={0.5}
+            warpAmount={5}
+          />
+        </div>
         <div className={styles.loaderContent}>
+          <motion.div
+            className={styles.profileWrapper}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <motion.div
+              className={styles.profileImage}
+              animate={isComplete ? { 
+                scale: [1, 1.1, 1],
+              } : {}}
+              transition={{ duration: 0.6 }}
+            >
+              <Image
+                src="/profile-image.png"
+                alt="Loading"
+                width={150}
+                height={150}
+                className={styles.profileImg}
+                unoptimized
+                priority
+              />
+            </motion.div>
+          </motion.div>
+
           <motion.div
             className={styles.logoWrapper}
             initial={{ scale: 0.5, opacity: 0, y: -20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <motion.div
-              className={styles.logo}
-              animate={{ 
-                rotate: [0, 360],
-                scale: isComplete ? [1, 1.1, 1] : 1
-              }}
-              transition={{ 
-                rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                scale: { duration: 0.5, times: [0, 0.5, 1] }
-              }}
+            <motion.span 
+              className={styles.logoText}
+              animate={isComplete ? { 
+                scale: [1, 1.2, 1],
+                opacity: [1, 0.8, 1]
+              } : {}}
+              transition={{ duration: 0.6 }}
             >
-              <motion.div
-                className={styles.logoCircle}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.div
-                className={styles.logoCircleInner}
-                animate={{ rotate: -360 }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.span 
-                className={styles.logoText}
-                animate={isComplete ? { 
-                  scale: [1, 1.2, 1],
-                  opacity: [1, 0.8, 1]
-                } : {}}
-                transition={{ duration: 0.6 }}
-              >
-                DN
-              </motion.span>
-            </motion.div>
+              Dhia Eddine Naija
+            </motion.span>
           </motion.div>
           
           <motion.div

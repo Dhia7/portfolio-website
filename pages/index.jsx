@@ -1,5 +1,5 @@
 // pages/index.js
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -170,13 +170,13 @@ export default function Home() {
     if (sectionId === 'about') {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: 'auto'
       });
       
-      // Clear navigation flag after scroll completes
+      // Clear navigation flag immediately
       setTimeout(() => {
         isNavigatingRef.current = false;
-      }, 1000);
+      }, 100);
       return;
     }
     
@@ -187,16 +187,16 @@ export default function Home() {
         const offset = 80; // Navbar height
         const targetPosition = targetSection.getBoundingClientRect().top + window.scrollY - offset;
         
-        // Smooth scroll
+        // Instant scroll (native browser behavior)
         window.scrollTo({
           top: targetPosition,
-          behavior: 'smooth'
+          behavior: 'auto'
         });
         
-        // Clear navigation flag after scroll animation completes
+        // Clear navigation flag immediately
         setTimeout(() => {
           isNavigatingRef.current = false;
-        }, 1000);
+        }, 100);
       } else {
         isNavigatingRef.current = false;
       }
