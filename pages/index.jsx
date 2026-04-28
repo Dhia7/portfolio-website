@@ -544,11 +544,11 @@ export default function Home() {
           >
             {[
               {
-                title: "Dashboard Platform",
-                url: "https://nextjs-dashboard-projects.vercel.app/",
-                description: "A full-stack Dashboard solution built with Next.js",
-                tech: ["React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
-                github: "https://github.com/Dhia7/nextjs-dashboard"
+                title: "Professional Workwear",
+                url: "https://www.unipro-company.ch/",
+                description: "A modern and responsive landing page solution built with Next.js.",
+                tech: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
+                github: "https://github.com/Dhia7/uniPro"
               },
               {
                 title: "Aesthetic Training Academy",
