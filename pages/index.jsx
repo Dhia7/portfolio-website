@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFreeCodeCamp } from '@fortawesome/free-brands-svg-icons';
 import { 
   faCertificate,
-  faAddressCard, 
   faGraduationCap,
   faCode,
   faEnvelope,
@@ -26,8 +25,8 @@ import Image from 'next/image';
 export default function Home() {
   const navigationSections = [
     { id: 'about', label: 'About' },
-    { id: 'experiences', label: 'Experiences' },
     { id: 'projects', label: 'Projects' },
+    { id: 'experiences', label: 'Experiences' },
     { id: 'certifications', label: 'Certifications' },
     { id: 'skills', label: 'Skills' }
   ];
@@ -95,17 +94,14 @@ export default function Home() {
       if (isAtBottom) {
         currentSection = 'skills';
       } else {
-        // Priority 2: Check if we're in the hero/summary section (About)
-        const summarySection = document.getElementById('summary');
-        const summaryEnd = summarySection ? summarySection.offsetTop + summarySection.offsetHeight : heroHeight;
-        
-        if (scrollPosition + 100 < summaryEnd) {
+        // Priority 2: Check if we're in the hero section (About)
+        if (scrollPosition + 100 < heroHeight) {
           currentSection = 'about';
         } else {
           // Priority 3: Check which section is most visible in the viewport
-          const navSectionIds = ['experiences', 'projects', 'certifications', 'skills'];
+          const navSectionIds = ['projects', 'experiences', 'certifications', 'skills'];
           let maxVisibleArea = 0;
-          let mostVisibleSection = 'experiences';
+          let mostVisibleSection = 'projects';
           
           for (const sectionId of navSectionIds) {
             const section = document.getElementById(sectionId);
@@ -212,8 +208,10 @@ export default function Home() {
       <Head>
         <title>Dhia Eddine Naija - Portfolio</title>
         <meta name="description" content="Full Stack Developer with 3+ years experience" />
-        <link rel="icon" href="/portfolioIcon.png" />
-        <link rel="apple-touch-icon" href="/portfolioIcon.png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#2c3e50" />
       </Head>
@@ -383,7 +381,7 @@ export default function Home() {
       </motion.header>
 
       <main>
-        <AnimatedSection id="summary" className={styles.section}>
+        <AnimatedSection id="projects" className={styles.section}>
           <motion.h2 
             className={styles.sectionTitle}
             initial={{ opacity: 0, x: -20 }}
@@ -391,49 +389,108 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <FontAwesomeIcon icon={faAddressCard} /> Summary
+            <FontAwesomeIcon icon={faProjectDiagram} /> Projects
           </motion.h2>
-          <div className={styles.sectionContent}>
-            <motion.p 
-              className={styles.highlightText}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              Experienced Full Stack Web Developer :
-            </motion.p>
-            <motion.ul 
-              className={styles.keyAchievements}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: {
-                  transition: {
-                    staggerChildren: 0.15
-                  }
+          <motion.div 
+            className={styles.projectsGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.2
                 }
-              }}
-            >
-              {[
-                "Experienced Full Stack Developer proficient in maintaining and building applications using the MERN stack and Next.js.",
-                "Expertise in creating Next.js-based projects, including ecommerce platforms and dashboards, with a focus on performance and user experience",
-                "Experienced in designing, developing, and maintaining scalable web applications with robust backend APIs"
-              ].map((item, index) => (
-                <motion.li
-                  key={index}
-                  variants={{
-                    hidden: { opacity: 0, x: -20 },
-                    visible: { opacity: 1, x: 0 }
-                  }}
-                  transition={{ duration: 0.5 }}
+              }
+            }}
+          >
+            {[
+              {
+                title: "Professional Workwear",
+                url: "https://www.unipro-company.ch/",
+                image: "/projects/professional-workwear.jpg",
+                description: "A modern and responsive landing page solution built with Next.js.",
+                tech: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
+                github: "https://github.com/Dhia7/uniPro"
+              },
+              {
+                title: "Aesthetic Training Academy",
+                url: "https://forma-beauty-international-academy-theta.vercel.app/",
+                image: "/projects/aesthetic-training-academy.jpg",
+                description: "Responsive website for an aesthetic training academy with a focus on contact and user engagement.",
+                tech: ["Vite", "WebGL", "shadcn/ui", "HTML5/CSS3", "Vercel"],
+                github: "https://github.com/Dhia7/forma-beauty-international-academy"
+              },
+              {
+                title: "Ecommerce Website",
+                url: "https://www.swisia.store/",
+                image: "/projects/ecommerce-website.jpg",
+                description: "A eCommerce website built with Next.js and other technologies.",
+                tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
+                github: "https://github.com/Dhia7/weary"
+              }
+            ].map((project, index) => (
+              <motion.div 
+                key={index}
+                className={styles.projectCard}
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.6 }}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              >
+                {project.image && (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.projectThumb}
+                  >
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} preview`}
+                      fill
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      className={styles.projectThumbImage}
+                    />
+                  </a>
+                )}
+                <div className={styles.projectCardBody}>
+                  <a
+                    href={project.github}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className={styles.projectTitleLink}
                 >
-                  {item}
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
+                    <h3>{project.title} <span className={styles.externalIcon}>↗</span></h3>
+                </a>
+                  <p>{project.description}</p>
+                <div className={styles.techStack}>
+                    {project.tech.map((tech, i) => (
+                      <motion.span
+                        key={i}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {tech}
+                      </motion.span>
+                    ))}
+                </div>
+                  <motion.a  
+                    href={project.url}
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.projectLink}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    >
+                      View Project <FontAwesomeIcon icon={faExternalLinkAlt} className={styles.linkIcon} />
+                  </motion.a>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </AnimatedSection>
 
         <AnimatedSection id="experiences" className={styles.section}>
@@ -467,6 +524,34 @@ export default function Home() {
               }}
               transition={{ duration: 0.6 }}
             >
+              <h3>Full Stack Developer - Freelancer</h3>
+              <div className={styles.timelineDetails}>
+                <span>2024 - Present</span>
+              </div>
+              <ul className={styles.responsibilities}>
+              <li>
+                  Developed and deployed scalable web applications as a Fullstack Developer, specializing in <strong>JavaScript</strong>, <strong>backend development</strong>, <strong>Next.js</strong>, and <strong>MERN stack</strong>.
+                </li>
+                <li>
+                  Built end-to-end solutions, including intuitive user interfaces, RESTful APIs, and database management for dynamic, data-driven applications.
+                </li>
+                <li>
+                  Delivered high-performance MERN stack projects, from concept to deployment, ensuring seamless functionality and optimal user experience.
+                </li>
+                <li>
+                  Optimized application performance through rigorous testing, code refinement, and efficient deployment strategies.
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div 
+              className={styles.timelineItem}
+              variants={{
+                hidden: { opacity: 0, x: -50 },
+                visible: { opacity: 1, x: 0 }
+              }}
+              transition={{ duration: 0.6 }}
+            >
               <h3>Web application internship</h3>
               <div className={styles.timelineDetails}>
                 <span>Februray 2023 - july 2023</span>
@@ -488,125 +573,6 @@ export default function Home() {
                 </li>
               </ul>
             </motion.div>
-
-            <motion.div 
-              className={styles.timelineItem}
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: { opacity: 1, x: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3>Full Stack Developer - Freelancer</h3>
-              <div className={styles.timelineDetails}>
-                <span>2024 - Present</span>
-              </div>
-              <ul className={styles.responsibilities}>
-              <li>
-                  Developed and deployed scalable web applications as a Fullstack Developer, specializing in <strong>JavaScript</strong>, <strong>backend development</strong>, <strong>Next.js</strong>, and <strong>MERN stack</strong>.
-                </li>
-                <li>
-                  Built end-to-end solutions, including intuitive user interfaces, RESTful APIs, and database management for dynamic, data-driven applications.
-                </li>
-                <li>
-                  Delivered high-performance MERN stack projects, from concept to deployment, ensuring seamless functionality and optimal user experience.
-                </li>
-                <li>
-                  Optimized application performance through rigorous testing, code refinement, and efficient deployment strategies.
-                </li>
-              </ul>
-            </motion.div>
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection id="projects" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faProjectDiagram} /> Projects
-          </motion.h2>
-          <motion.div 
-            className={styles.projectsGrid}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.2
-                }
-              }
-            }}
-          >
-            {[
-              {
-                title: "Professional Workwear",
-                url: "https://www.unipro-company.ch/",
-                description: "A modern and responsive landing page solution built with Next.js.",
-                tech: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
-                github: "https://github.com/Dhia7/uniPro"
-              },
-              {
-                title: "Aesthetic Training Academy",
-                url: "https://forma-beauty-international-academy-theta.vercel.app/",
-                description: "Responsive website for an aesthetic training academy with a focus on contact and user engagement.",
-                tech: ["Vite", "WebGL", "shadcn/ui", "HTML5/CSS3", "Vercel"],
-                github: "https://github.com/Dhia7/forma-beauty-international-academy"
-              },
-              {
-                title: "Ecommerce Website",
-                url: "https://weary-iota.vercel.app/",
-                description: "A eCommerce website built with Next.js and other technologies.",
-                tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
-                github: "https://github.com/Dhia7/weary"
-              }
-            ].map((project, index) => (
-              <motion.div 
-                key={index}
-                className={styles.projectCard}
-                variants={{
-                  hidden: { opacity: 0, y: 50 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.6 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              >
-                <a
-                  href={project.github}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={styles.projectTitleLink}
-              >
-                  <h3>{project.title} <span className={styles.externalIcon}>↗</span></h3>
-              </a>
-                <p>{project.description}</p>
-              <div className={styles.techStack}>
-                  {project.tech.map((tech, i) => (
-                    <motion.span
-                      key={i}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {tech}
-                    </motion.span>
-                  ))}
-              </div>
-                <motion.a  
-                  href={project.url}
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className={styles.projectLink}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  >
-                    View Project <FontAwesomeIcon icon={faExternalLinkAlt} className={styles.linkIcon} />
-                </motion.a>
-              </motion.div>
-            ))}
           </motion.div>
         </AnimatedSection>
 

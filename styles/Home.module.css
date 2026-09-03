@@ -527,43 +527,6 @@
   border-radius: 1px;
 }
 
-.sectionContent {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.highlightText {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #ffffff;
-  letter-spacing: 0.01em;
-}
-
-.keyAchievements {
-  padding-left: 0;
-  list-style: none;
-}
-
-.keyAchievements li {
-  margin-bottom: 1.25rem;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.8);
-  padding-left: 1.75rem;
-  position: relative;
-  font-size: 0.9375rem;
-}
-
-.keyAchievements li::before {
-  content: '▸';
-  position: absolute;
-  left: 0;
-  color: #2ecc71;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
 /* Timeline */
 .timeline {
   position: relative;
@@ -672,7 +635,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   position: relative;
@@ -692,6 +655,33 @@
   background: #2ecc71;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.projectThumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.projectThumbImage {
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.projectCard:hover .projectThumbImage {
+  transform: scale(1.05);
+}
+
+.projectCardBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .projectCard:hover {
@@ -1105,7 +1095,7 @@
     font-size: 1.125rem;
   }
   
-  .projectCard {
+  .projectCardBody {
     padding: 1.25rem;
   }
   
@@ -1213,7 +1203,7 @@
     padding-left: 2rem;
   }
   
-  .projectCard {
+  .projectCardBody {
     padding: 1.5rem;
   }
   
@@ -1300,7 +1290,7 @@
     padding-left: 2.5rem;
   }
   
-  .projectCard {
+  .projectCardBody {
     padding: 1.75rem;
   }
   
@@ -1399,7 +1389,7 @@
     margin-bottom: 3rem;
   }
   
-  .projectCard {
+  .projectCardBody {
     padding: 2rem;
   }
   

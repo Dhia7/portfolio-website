@@ -3,6 +3,7 @@ import '../styles/global/globals.css';
 import '../styles/SmoothScroll.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import PageLoader from '../components/PageLoader';
 import { ThemeProvider } from '../components/ThemeContext';
 import DarkVeil from '../components/DarkVeil';
@@ -25,7 +26,7 @@ function MyApp({ Component, pageProps, router }) {
       // Preload critical images
       const preloadImages = [
         '/profile-image.png',
-        '/portfolioIcon.png'
+        '/favicon.png'
       ];
       
       preloadImages.forEach(src => {
@@ -89,8 +90,20 @@ function MyApp({ Component, pageProps, router }) {
   // #region agent log
   fetch('http://127.0.0.1:7244/ingest/bf8c3d40-ef3f-42c0-bd4e-f5999ecb5154',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'_app.js:76',message:'Rendering check - loading and isInitialLoad',data:{loading,isInitialLoad,shouldShowLoader:loading&&isInitialLoad},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,D'})}).catch(()=>{});
   // #endregion
+  const iconHead = (
+    <Head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" href="/favicon.png" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    </Head>
+  );
+
   if (loading && isInitialLoad) {
-    return <PageLoader onLoadComplete={() => {
+    return (
+      <>
+        {iconHead}
+        <PageLoader onLoadComplete={() => {
       // #region agent log
       fetch('http://127.0.0.1:7244/ingest/bf8c3d40-ef3f-42c0-bd4e-f5999ecb5154',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'_app.js:78',message:'onLoadComplete called - BEFORE setLoading',data:{isInitialLoad,loading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
       // #endregion
@@ -99,11 +112,14 @@ function MyApp({ Component, pageProps, router }) {
       // #region agent log
       fetch('http://127.0.0.1:7244/ingest/bf8c3d40-ef3f-42c0-bd4e-f5999ecb5154',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'_app.js:81',message:'onLoadComplete called - AFTER setLoading and setIsInitialLoad',data:{isInitialLoad:false,loading:false},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
       // #endregion
-    }} />;
+        }} />
+      </>
+    );
   }
 
   return (
     <ThemeProvider>
+      {iconHead}
       <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
         <DarkVeil
         />
