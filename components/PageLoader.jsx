@@ -2,7 +2,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import styles from '../styles/PageLoader.module.css';
-import DarkVeil from './DarkVeil';
 import Image from 'next/image';
 
 export default function PageLoader({ onLoadComplete }) {
@@ -146,13 +145,6 @@ export default function PageLoader({ onLoadComplete }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       >
-        <div className={styles.loaderBackground}>
-          <DarkVeil
-            speed={3}
-            scanlineFrequency={0.5}
-            warpAmount={5}
-          />
-        </div>
         <div className={styles.loaderContent}>
           <motion.div
             className={styles.profileWrapper}

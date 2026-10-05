@@ -1,796 +1,86 @@
-// pages/index.js
-import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
-import Head from 'next/head';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFreeCodeCamp } from '@fortawesome/free-brands-svg-icons';
-import { 
-  faCertificate,
-  faGraduationCap,
-  faCode,
-  faEnvelope,
-  faBriefcase,
-  faProjectDiagram,
-  faLink,
-  faExternalLinkAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import styles from '../styles/Home.module.css';
-import AnimatedSection from '../components/AnimatedSection';
-import TypingEffect from '../components/TypingEffect';
-import DarkVeil from '../components/DarkVeil';
-import Image from 'next/image';
-
+import { useEffect, useRef, useState } from "react";
+import Head from "next/head";
+import { MotionConfig } from "framer-motion";
+import { navigation } from "../lib/portfolio";
+import SiteNav from "../components/portfolio/SiteNav";
+import Hero from "../components/portfolio/Hero";
+import Projects from "../components/portfolio/Projects";
+import Stack from "../components/portfolio/Stack";
+import Experience from "../components/portfolio/Experience";
+import Certifications from "../components/portfolio/Certifications";
+import Education from "../components/portfolio/Education";
+import Contact from "../components/portfolio/Contact";
+import Cursor from "../components/portfolio/Cursor";
 
 export default function Home() {
-  const navigationSections = [
-    { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'experiences', label: 'Experiences' },
-    { id: 'certifications', label: 'Certifications' },
-    { id: 'skills', label: 'Skills' }
-  ];
-  const [activeSection, setActiveSection] = useState('about');
-  const [isVisible, setIsVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState("profile");
   const isNavigatingRef = useRef(false);
-  const [heroTilt, setHeroTilt] = useState({ x: 0, y: 0 });
-  const heroTextRef = useRef(null);
-  const [showAllTech, setShowAllTech] = useState(false);
-  
-  const allTechnologies = ['Javascript(ES6+)','TypeScript', 'PostgreSQL', 'MongoDB', 'Express.js', 'Git/GitHub', 'Docker', 'CI/CD', 'Redux', 'Tailwind CSS', 'JWT', 'REST APIs', 'Vercel'];
-  const initialTechCount = 5;
-  const displayedTech = showAllTech ? allTechnologies : allTechnologies.slice(0, initialTechCount);
-
-  // Handle hero text tilt effect
-  const handleHeroMouseMove = (e) => {
-    if (!heroTextRef.current) return;
-    
-    const rect = heroTextRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Reduced sensitivity for slower movement (divided by 20 instead of 10)
-    const rotateX = (y - centerY) / 20;
-    const rotateY = (centerX - x) / 20;
-    
-    setHeroTilt({ x: rotateX, y: rotateY });
-  };
-
-  const handleHeroMouseLeave = () => {
-    setHeroTilt({ x: 0, y: 0 });
-  };
-
-  // Apply tilt transform to hero text
-  useEffect(() => {
-    if (heroTextRef.current) {
-      heroTextRef.current.style.transform = `perspective(1000px) rotateX(${heroTilt.x}deg) rotateY(${heroTilt.y}deg)`;
-    }
-  }, [heroTilt]);
 
   useEffect(() => {
-    setIsVisible(true);
-    
-    const handleScroll = () => {
-      // Don't update section during manual navigation
-      if (isNavigatingRef.current) {
-        return;
-      }
-      
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const heroSection = document.querySelector('header');
-      const heroHeight = heroSection ? heroSection.offsetHeight : 0;
-      
-      // Active section detection
-      let currentSection = 'about'; // Default to about (hero)
-      
-      // Priority 1: Check if we're at the bottom of the page - keep last section (skills) active
-      const isAtBottom = scrollPosition + windowHeight >= documentHeight - 50;
-      
-      if (isAtBottom) {
-        currentSection = 'skills';
-      } else {
-        // Priority 2: Check if we're in the hero section (About)
-        if (scrollPosition + 100 < heroHeight) {
-          currentSection = 'about';
-        } else {
-          // Priority 3: Check which section is most visible in the viewport
-          const navSectionIds = ['projects', 'experiences', 'certifications', 'skills'];
-          let maxVisibleArea = 0;
-          let mostVisibleSection = 'projects';
-          
-          for (const sectionId of navSectionIds) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-              const rect = section.getBoundingClientRect();
-              const sectionTop = rect.top;
-              const sectionBottom = rect.bottom;
-              const navbarHeight = 80;
-              
-              // Calculate visible area of this section in viewport
-              const visibleTop = Math.max(sectionTop, navbarHeight);
-              const visibleBottom = Math.min(sectionBottom, windowHeight);
-              const visibleArea = Math.max(0, visibleBottom - visibleTop);
-              
-              // The section with the most visible area is the active one
-              if (visibleArea > maxVisibleArea) {
-                maxVisibleArea = visibleArea;
-                mostVisibleSection = sectionId;
-              }
-            }
-          }
-          
-          currentSection = mostVisibleSection;
-        }
-      }
-      
-      if (currentSection !== activeSection) {
-        setActiveSection(currentSection);
-      }
-    };
-    
-    // Debounce scroll for smoother performance
-    let scrollTimeout;
-    const debouncedHandleScroll = () => {
-      if (scrollTimeout) {
-        window.cancelAnimationFrame(scrollTimeout);
-      }
-      scrollTimeout = window.requestAnimationFrame(handleScroll);
-    };
-    
-    window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', debouncedHandleScroll);
-  }, [activeSection, navigationSections]);
+    const sections = navigation
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
 
- 
-    
-  const handleNavClick = (sectionId, e) => {
-    // Prevent default if event object has preventDefault
-    if (e && typeof e.preventDefault === 'function') {
-      e.preventDefault();
-    }
-    
-    // Set flag to prevent scroll detection from interfering
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isNavigatingRef.current) return;
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-30% 0px -45% 0px", threshold: [0.15, 0.35, 0.6] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const handleNavigate = (sectionId, event) => {
+    if (event?.preventDefault) event.preventDefault();
     isNavigatingRef.current = true;
-    
-    // Update active section immediately
     setActiveSection(sectionId);
     
-    // Special handling for "about" - scroll to top (hero section)
-    if (sectionId === 'about') {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
-      
-      // Clear navigation flag immediately
-      setTimeout(() => {
-        isNavigatingRef.current = false;
-      }, 100);
-      return;
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-      const targetSection = document.getElementById(sectionId);
-      if (targetSection) {
-        const offset = 80; // Navbar height
-        const targetPosition = targetSection.getBoundingClientRect().top + window.scrollY - offset;
-        
-        // Instant scroll (native browser behavior)
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'auto'
-        });
-        
-        // Clear navigation flag immediately
-        setTimeout(() => {
+
+    window.setTimeout(() => {
           isNavigatingRef.current = false;
-        }, 100);
-      } else {
-        isNavigatingRef.current = false;
-      }
-    });
+    }, 700);
   };
 
-
-
-  
-
   return (
-    <div className={styles.container}>
+    <MotionConfig reducedMotion="user">
+      <div className="relative min-h-screen text-[var(--text-primary)]">
       <Head>
         <title>Dhia Eddine Naija - Portfolio</title>
-        <meta name="description" content="Full Stack Developer with 3+ years experience" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#2c3e50" />
-      </Head>
-
-      <motion.nav 
-        className={styles.nav}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        <ul className={styles.navList}>
-          {navigationSections.map((section, index) => (
-            <motion.li 
-              key={section.id} 
-              className={styles.navItem}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-            >
-              <button
-                onClick={(e) => handleNavClick(section.id, e)}
-                className={`${styles.navLink} ${
-                  activeSection === section.id ? styles.active : ''
-                }`}
-              >
-                {section.label}
-                {activeSection === section.id && (
-                  <motion.span 
-                    className={styles.navIndicator}
-                    layoutId="activeIndicator"
-                    initial={{ width: 0 }}
-                    animate={{ width: '100%' }}
-                    exit={{ width: 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </button>
-            </motion.li>
-          ))}
-        </ul>
-      </motion.nav>
-
-      <motion.header 
-        className={styles.hero}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
-          <DarkVeil
-            speed={3}
-            scanlineFrequency={0.5}
-            warpAmount={5}
+          <meta
+            name="description"
+            content="Full Stack Developer in Sousse, Tunisia. React, Node.js, and Next.js."
           />
+          <meta name="theme-color" content="#0F1419" />
+        </Head>
+
+        <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+          <div className="floating-blob top-[-12vh] left-[-8vw] h-96 w-96 bg-indigo-600" />
+          <div className="floating-blob right-[-8vw] bottom-[-12vh] h-96 w-96 bg-pink-600" />
+          <div className="floating-blob top-[22vh] left-[58vw] h-[420px] w-[420px] bg-blue-500" />
         </div>
-  <div className={styles.heroContent}>
-    <div 
-      ref={heroTextRef}
-      className={styles.heroText}
-      onMouseMove={handleHeroMouseMove}
-      onMouseLeave={handleHeroMouseLeave}
-    >
-            <motion.div
-              className={styles.heroProfileImage}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            >
-              <Image
-                src="/profile-image.png"
-                alt="Dhia Eddine Naija"
-                width={200}
-                height={200}
-                className={styles.heroImage}
-                unoptimized
-                priority
-                sizes="(max-width: 479px) 120px, (max-width: 767px) 160px, (max-width: 1023px) 180px, 200px"
-              />
-            </motion.div>
-            <TypingEffect 
-              text="Dhia Eddine Naija"
-              className={styles.heroTitle}
-            />
-            <motion.div 
-              className={styles.heroSubtitle}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-            >
-        <span className={styles.location}>📍 Sousse, Tunisia</span>
-        <span className={styles.divider}>|</span>
-        <span className={styles.tagline}>Full Stack Developer</span>
-            </motion.div>
-            <motion.div 
-              className={styles.heroHighlight}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.6 }}
-            >
-        <p>Specializing in modern web development with React, Node.js, and Next.js</p>
-        <div className={styles.techStack}>
-                {displayedTech.map((tech, index) => (
-                  <motion.span
-                    key={tech}
-                    className={styles.techPill}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 + index * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
-                {!showAllTech && allTechnologies.length > initialTechCount && (
-                  <motion.button
-                    className={styles.techPill}
-                    onClick={() => setShowAllTech(true)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 + initialTechCount * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    style={{ cursor: 'pointer', border: '1px solid rgba(46, 204, 113, 0.3)' }}
-                  >
-                    ...
-                  </motion.button>
-                )}
-                {showAllTech && (
-                  <motion.button
-                    className={styles.techPill}
-                    onClick={() => setShowAllTech(false)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 + allTechnologies.length * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    style={{ cursor: 'pointer', border: '1px solid rgba(46, 204, 113, 0.3)' }}
-                  >
-                    Show Less
-                  </motion.button>
-                )}
-              </div>
-            </motion.div>
-          </div>
-          <motion.div 
-            className={styles.heroActions}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, duration: 0.6 }}
-          >
-            <motion.a 
-              href="#contact" 
-              className={styles.primaryButton}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Contact Me
-            </motion.a>
-            <motion.a 
-              href="#projects" 
-              className={styles.secondaryButton}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View Projects
-            </motion.a>
-          </motion.div>
-        </div>
-      </motion.header>
 
-      <main>
-        <AnimatedSection id="projects" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faProjectDiagram} /> Projects
-          </motion.h2>
-          <motion.div 
-            className={styles.projectsGrid}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.2
-                }
-              }
-            }}
-          >
-            {[
-              {
-                title: "Professional Workwear",
-                url: "https://www.unipro-company.ch/",
-                image: "/projects/professional-workwear.jpg",
-                description: "A modern and responsive landing page solution built with Next.js.",
-                tech: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
-                github: "https://github.com/Dhia7/uniPro"
-              },
-              {
-                title: "Aesthetic Training Academy",
-                url: "https://forma-beauty-international-academy-theta.vercel.app/",
-                image: "/projects/aesthetic-training-academy.jpg",
-                description: "Responsive website for an aesthetic training academy with a focus on contact and user engagement.",
-                tech: ["Vite", "WebGL", "shadcn/ui", "HTML5/CSS3", "Vercel"],
-                github: "https://github.com/Dhia7/forma-beauty-international-academy"
-              },
-              {
-                title: "Ecommerce Website",
-                url: "https://www.swisia.store/",
-                image: "/projects/ecommerce-website.jpg",
-                description: "A eCommerce website built with Next.js and other technologies.",
-                tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel/Postgres"],
-                github: "https://github.com/Dhia7/weary"
-              }
-            ].map((project, index) => (
-              <motion.div 
-                key={index}
-                className={styles.projectCard}
-                variants={{
-                  hidden: { opacity: 0, y: 50 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.6 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              >
-                {project.image && (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.projectThumb}
-                  >
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} preview`}
-                      fill
-                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                      className={styles.projectThumbImage}
-                    />
-                  </a>
-                )}
-                <div className={styles.projectCardBody}>
-                  <a
-                    href={project.github}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className={styles.projectTitleLink}
-                >
-                    <h3>{project.title} <span className={styles.externalIcon}>↗</span></h3>
-                </a>
-                  <p>{project.description}</p>
-                <div className={styles.techStack}>
-                    {project.tech.map((tech, i) => (
-                      <motion.span
-                        key={i}
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {tech}
-                      </motion.span>
-                    ))}
-                </div>
-                  <motion.a  
-                    href={project.url}
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className={styles.projectLink}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    >
-                      View Project <FontAwesomeIcon icon={faExternalLinkAlt} className={styles.linkIcon} />
-                  </motion.a>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatedSection>
+        <SiteNav activeSection={activeSection} onNavigate={handleNavigate} />
 
-        <AnimatedSection id="experiences" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faBriefcase} /> Work Experiences
-          </motion.h2>
-          <motion.div 
-            className={styles.timeline}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.3
-                }
-              }
-            }}
-          >
-            <motion.div 
-              className={styles.timelineItem}
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: { opacity: 1, x: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3>Full Stack Developer - Freelancer</h3>
-              <div className={styles.timelineDetails}>
-                <span>2024 - Present</span>
-              </div>
-              <ul className={styles.responsibilities}>
-              <li>
-                  Developed and deployed scalable web applications as a Fullstack Developer, specializing in <strong>JavaScript</strong>, <strong>backend development</strong>, <strong>Next.js</strong>, and <strong>MERN stack</strong>.
-                </li>
-                <li>
-                  Built end-to-end solutions, including intuitive user interfaces, RESTful APIs, and database management for dynamic, data-driven applications.
-                </li>
-                <li>
-                  Delivered high-performance MERN stack projects, from concept to deployment, ensuring seamless functionality and optimal user experience.
-                </li>
-                <li>
-                  Optimized application performance through rigorous testing, code refinement, and efficient deployment strategies.
-                </li>
-              </ul>
-            </motion.div>
-
-            <motion.div 
-              className={styles.timelineItem}
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: { opacity: 1, x: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3>Web application internship</h3>
-              <div className={styles.timelineDetails}>
-                <span>Februray 2023 - july 2023</span>
-                <span>Sousse, TN</span>
-              </div>
-              <ul className={styles.responsibilities}>
-              <li><div>
-                  <strong>Needs Analysis:</strong> Collaborated with stakeholders to gather and analyze project requirements, defining the site&apos;s key features.
-                  </div>
-                </li>
-                <li>
-                  <strong>Design and Development:</strong> Designed the site&apos;s architecture and developed functionalities using modern technologies, creating an intuitive and responsive user interface and implementing a database for dynamic content management.
-                </li>
-                <li>
-                  <strong>Testing and Optimization:</strong> Conducted rigorous testing to ensure quality and performance, optimizing code for faster loading speeds and an enhanced user experience.
-                </li>
-                <li>
-                  <strong>Deployment:</strong> Supervised the site&apos;s deployment, ensuring it was fully functional, accessible, and ready for end users.
-                </li>
-              </ul>
-            </motion.div>
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection id="certifications" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faCertificate} /> Certifications
-          </motion.h2>
-          <motion.div 
-            className={styles.timeline}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.3
-                }
-              }
-            }}
-          >
-            <motion.div 
-              className={styles.timelineItem}
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: { opacity: 1, x: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 style={{ display: 'flex', alignItems: 'center' }}> <FontAwesomeIcon icon={faFreeCodeCamp}/>_BackEnd Development and APIs</h3>
-              <div className={styles.timelineDetails}>
-                <span>Februray 14 - 2025</span>|
-                <a style={{ textDecoration: 'none', color: 'inherit' }} target="_blank" rel="noopener noreferrer"  href='https://www.freecodecamp.org/certification/Dhianaija/back-end-development-and-apis'><span>https://www.freecodecamp.org/certification/Dhianaija/back-end-development-and-apis</span></a>
-              </div>
-              <ul className={styles.responsibilities}>
-                <li>Managing Packages with NPM</li>
-                <li>Basic Node and Express.js</li>
-                <li>MongoDB and Mongoose</li>
-                <li>Back End Development and APIs Projects</li>
-              </ul>
-            </motion.div>
-
-            <motion.div 
-              className={styles.timelineItem}
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: { opacity: 1, x: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 style={{ display: 'flex', alignItems: 'center' }}><FontAwesomeIcon icon={faFreeCodeCamp} />_Legacy Javascript Algorithms and Data Structures</h3>
-              <div className={styles.timelineDetails}>
-                <span>December 10 - 2024</span>|
-                <a style={{ textDecoration: 'none', color: 'inherit' }} target="_blank" rel="noopener noreferrer"  href='https://www.freecodecamp.org/certification/Dhianaija/javascript-algorithms-and-data-structures'><span>https://www.freecodecamp.org/certification/Dhianaija/javascript-algorithms-and-data-structures</span></a>
-              </div>
-              <ul className={styles.responsibilities}>
-                <li>Basic JavaScript</li>
-                <li>ES6</li>
-                <li>Regular Expressions</li>
-                <li>Debugging</li>
-                <li>Basic Data Structures</li>
-                <li>Basic Algorithm Scripting</li>
-                <li>Object Oriented Programming</li>
-                <li>Functional Programming</li>
-                <li>Intermediate Algorithm Scripting</li>
-                <li>JavaScript Algorithms and Data Structures Projects</li>
-              </ul>
-            </motion.div>
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection id="skills" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faCode} /> Technical Skills
-          </motion.h2>
-          <motion.div 
-            className={styles.skillsGrid}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.2
-                }
-              }
-            }}
-          >
-            {[
-              { title: "Frontend", skills: ["React/Redux", "TypeScript", "Next.js", "TailwindCSS"] },
-              { title: "Backend", skills: ["Node.js", "Express.js", "REST APIs", "JWT"] },
-              { title: "Database", skills: ["MongoDB", "PostgreSQL", "Mongoose", "SQL"] }
-            ].map((category, index) => (
-              <motion.div 
-                key={index}
-                className={styles.skillCategory}
-                variants={{
-                  hidden: { opacity: 0, scale: 0.9 },
-                  visible: { opacity: 1, scale: 1 }
-                }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-              >
-                <h3>{category.title}</h3>
-                <motion.ul 
-                  className={styles.skillList}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={{
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1
-                      }
-                    }
-                  }}
-                >
-                  {category.skills.map((skill, i) => (
-                    <motion.li
-                      key={i}
-                      variants={{
-                        hidden: { opacity: 0, x: -20 },
-                        visible: { opacity: 1, x: 0 }
-                      }}
-                      transition={{ duration: 0.4 }}
-                    >
-                      {skill}
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection id="education" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faGraduationCap} /> Education
-          </motion.h2>
-          <motion.div 
-            className={styles.educationItem}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-          >
-            <h3>Business Intelligence</h3>
-            <div className={styles.educationDetails}>
-              <span>Polytechnic Sousse University </span>
-              <span>2021 - 2023</span>
-            </div>
-            <p>Relevant Coursework: Advanced Algorithms, Web Application Development, Data Analysis, Machine Learning and Deep Learning</p>
-          </motion.div>
-        </AnimatedSection>
-
-        <AnimatedSection id="contact" className={styles.section}>
-          <motion.h2 
-            className={styles.sectionTitle}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <FontAwesomeIcon icon={faLink}/> Contact
-          </motion.h2>
-          <motion.div 
-            className={styles.contactGrid}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.15
-                }
-              }
-            }}
-          >
-            {[
-              { icon: faLinkedin, href: "https://www.linkedin.com/in/dhia-naija-64bb82200/", text: "linkedin.com/in/dhianaija" },
-              { icon: faGithub, href: "https://https://github.com/Dhia7.com/johndoe", text: "github.com/dhianaija" },
-              { icon: faEnvelope, href: "#", text: "dhianaija@gmail.com" }
-            ].map((contact, index) => (
-              <motion.div 
-                key={index}
-                className={styles.contactItem}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ scale: 1.05, y: -5, transition: { duration: 0.2 } }}
-              >
-                <FontAwesomeIcon icon={contact.icon} />
-                <a href={contact.href}>{contact.text}</a>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatedSection>
+        <main className="relative z-10">
+          <Hero onNavigate={handleNavigate} />
+          <Projects />
+          <Stack />
+          <Experience />
+          <Certifications />
+          <Education />
+          <Contact />
       </main>
     </div>
+    </MotionConfig>
   );
 }
