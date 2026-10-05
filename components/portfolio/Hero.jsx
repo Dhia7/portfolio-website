@@ -118,9 +118,9 @@ export default function Hero({ onNavigate }) {
             onMouseMove={tiltCard}
             onMouseLeave={resetCard}
           >
-            <div className="portrait-frame absolute -inset-4 rounded-[2.5rem] bg-gradient-to-tr from-indigo-500 to-pink-500 opacity-20" />
-            <div className="portrait-frame-alt absolute -inset-4 rounded-[2.5rem] border border-[var(--border-color)]" />
-            <div className="portrait-float relative z-10 aspect-square w-full overflow-hidden rounded-[2.5rem] bg-[#252527] shadow-2xl">
+            <div className="portrait-frame absolute -inset-4 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 opacity-20" />
+            <div className="portrait-frame-alt absolute -inset-4 rounded-full border border-[var(--border-color)]" />
+            <div className="portrait-float relative z-10 aspect-square w-full overflow-hidden rounded-full bg-[#252527] shadow-2xl">
               <Image
                 src={profile.portrait}
                 alt={profile.name}
@@ -131,10 +131,10 @@ export default function Hero({ onNavigate }) {
                 className="object-contain object-center"
               />
             </div>
-            <div className="chip-bob glass-card absolute -right-2 top-4 z-20 rounded-2xl p-4 sm:-right-6">
+            <div className="chip-bob glass-card absolute top-[8%] right-[6%] z-20 rounded-2xl p-4">
               <Icon name="sparkles" className="h-8 w-8 text-yellow-400" />
             </div>
-            <div className="chip-pulse glass-card absolute -bottom-3 -left-3 z-20 rounded-2xl p-4 sm:-left-8">
+            <div className="chip-pulse glass-card absolute bottom-[8%] left-[6%] z-20 rounded-2xl p-4">
               <Icon name="code" className="h-8 w-8 text-blue-400" />
             </div>
           </div>

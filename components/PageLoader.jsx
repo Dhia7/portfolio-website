@@ -7,7 +7,6 @@ import Image from 'next/image';
 export default function PageLoader({ onLoadComplete }) {
   const [progress, setProgress] = useState(0);
   const [loadingStage, setLoadingStage] = useState('Initializing...');
-  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     let progressValue = 0;
@@ -47,7 +46,6 @@ export default function PageLoader({ onLoadComplete }) {
       // Ensure progress reaches 100%
       setProgress(100);
       setLoadingStage('Complete!');
-      setIsComplete(true);
       
       // Wait a moment to show "Complete!" at 100%, then fade out
       setTimeout(() => {
@@ -148,45 +146,36 @@ export default function PageLoader({ onLoadComplete }) {
         <div className={styles.loaderContent}>
           <motion.div
             className={styles.profileWrapper}
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: 0.15, duration: 0.6 }}
           >
-            <motion.div
-              className={styles.profileImage}
-              animate={isComplete ? { 
-                scale: [1, 1.1, 1],
-              } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <Image
-                src="/profile-image.png"
-                alt="Loading"
-                width={150}
-                height={150}
-                className={styles.profileImg}
-                unoptimized
-                priority
-              />
-            </motion.div>
+            <div className={styles.profileFrame}>
+              <div className={styles.profileImage}>
+                <Image
+                  src="/profile-image.png"
+                  alt="Dhia Eddine Naija"
+                  width={168}
+                  height={168}
+                  className={styles.profileImg}
+                  unoptimized
+                  priority
+                />
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
             className={styles.logoWrapper}
-            initial={{ scale: 0.5, opacity: 0, y: -20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <motion.span 
-              className={styles.logoText}
-              animate={isComplete ? { 
-                scale: [1, 1.2, 1],
-                opacity: [1, 0.8, 1]
-              } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              Dhia Eddine Naija
-            </motion.span>
+            <div className={styles.brand}>
+              <span className={styles.monogram}>DN</span>
+              <span className={`${styles.logoText} gradient-text`}>Naija</span>
+            </div>
+            <p className={styles.role}>Full Stack Developer</p>
           </motion.div>
           
           <motion.div
