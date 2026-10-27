@@ -73,8 +73,8 @@ export default function Home() {
 
         <main className="relative z-10">
           <Hero onNavigate={handleNavigate} />
-          <Projects />
           <Stack />
+          <Projects />
           <Experience />
           <Certifications />
           <Education />
