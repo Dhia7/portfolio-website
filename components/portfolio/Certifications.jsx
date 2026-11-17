@@ -1,5 +1,6 @@
 import { certifications } from "../../lib/portfolio";
 import Icon from "./Icons";
+import Press from "./Press";
 import Reveal from "./Reveal";
 
 export default function Certifications() {
@@ -15,16 +16,16 @@ export default function Certifications() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {certifications.map((item, index) => (
-            <Reveal key={item.href} delay={(index + 1) * 0.1}>
+            <Press key={item.href} delay={index * 0.08}>
               <a
                 href={item.href}
                 id={`certification-${index}-link`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-card block rounded-3xl border-l-4 border-emerald-500 p-6 transition-transform hover:-translate-y-1"
+                className="record-card glass-card block rounded-3xl p-6"
               >
                 <div className="mb-3 flex items-start gap-4">
-                  <Icon name="award" className="text-label-emerald mt-1 h-7 w-7 shrink-0" />
+                  <Icon name="award" className="text-label mt-1 h-7 w-7 shrink-0" />
                   <div>
                     <h4 className="text-lg font-bold">{item.title}</h4>
                     <p className="text-copy text-sm">
@@ -35,13 +36,13 @@ export default function Certifications() {
                 <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
                   {item.topics.map((topic) => (
                     <li key={topic} className="text-copy-strong flex items-start gap-2.5 text-sm">
-                      <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--label-emerald)]" />
+                      <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--label)]" />
                       <span>{topic}</span>
                     </li>
                   ))}
                 </ul>
               </a>
-            </Reveal>
+            </Press>
           ))}
         </div>
       </div>

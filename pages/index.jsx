@@ -60,7 +60,7 @@ export default function Home() {
             name="description"
             content="Full Stack Developer in Sousse, Tunisia. React, Node.js, and Next.js."
           />
-          <meta name="theme-color" content="#0F1419" />
+          <meta name="theme-color" content="#1C1916" />
         </Head>
 
         <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">

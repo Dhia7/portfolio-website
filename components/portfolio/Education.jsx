@@ -1,5 +1,6 @@
 import { education, skillGroups } from "../../lib/portfolio";
 import Icon from "./Icons";
+import Press from "./Press";
 import Reveal from "./Reveal";
 
 export default function Education() {
@@ -14,8 +15,8 @@ export default function Education() {
         </Reveal>
 
         <div className="grid items-start gap-8 lg:grid-cols-2">
-          <Reveal>
-            <article className="glass-card rounded-3xl border-l-4 border-indigo-500 p-8">
+          <Press>
+            <article className="record-card glass-card rounded-3xl p-8">
               <div className="mb-4 flex items-start gap-4">
                 <Icon name="cap" className="text-label mt-1 h-8 w-8 shrink-0" />
                 <div>
@@ -34,9 +35,9 @@ export default function Education() {
                 ))}
               </ul>
             </article>
-          </Reveal>
+          </Press>
 
-          <Reveal delay={0.2}>
+          <Press delay={0.12}>
             <div className="glass-card rounded-3xl p-8 md:p-10">
               <h4 className="mb-6 text-2xl font-bold">Technical focus</h4>
               <div className="grid gap-6">
@@ -57,7 +58,7 @@ export default function Education() {
                 ))}
               </div>
             </div>
-          </Reveal>
+          </Press>
         </div>
       </div>
     </section>

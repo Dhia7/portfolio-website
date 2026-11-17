@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navigation, profile } from "../../lib/portfolio";
 import Icon from "./Icons";
 import { useTheme } from "../ThemeContext";
@@ -9,10 +9,18 @@ const talk = navigation.find((item) => item.cta);
 export default function SiteNav({ activeSection, onNavigate }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const progressRef = useRef(null);
   const { toggleTheme } = useTheme();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const bar = progressRef.current;
+      if (!bar) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const amount = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      bar.style.transform = `scaleX(${amount})`;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -36,6 +44,7 @@ export default function SiteNav({ activeSection, onNavigate }) {
 
   return (
     <header className={`site-header ${scrolled || open ? "scrolled" : ""}`}>
+      <div ref={progressRef} className="read-progress" aria-hidden="true" />
       <div className="header-border" />
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between px-4 md:px-6" aria-label="Primary">
         <a
@@ -44,7 +53,7 @@ export default function SiteNav({ activeSection, onNavigate }) {
           onClick={(event) => handleClick("profile", event)}
           className="font-display group flex items-center gap-3 text-2xl font-bold tracking-tight"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 to-pink-500 text-xs text-white shadow-lg transition-transform group-hover:rotate-6 group-hover:scale-110">
+          <span className="mark-logo flex h-10 w-10 items-center justify-center rounded-xl text-xs">
             {profile.monogram}
           </span>
           <span className="sr-only">{profile.name}</span>
@@ -72,13 +81,13 @@ export default function SiteNav({ activeSection, onNavigate }) {
         <div className="flex items-center gap-3 md:gap-4">
           <button
             type="button"
-            className="theme-toggle glass-card group flex h-10 w-10 items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95 md:h-11 md:w-11"
+            className="theme-toggle glass-card group flex h-10 w-10 items-center justify-center rounded-full md:h-11 md:w-11"
             aria-label="Toggle night mode"
             title="Toggle theme"
             onClick={toggleTheme}
           >
-            <Icon name="moon" className="icon-moon h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-12" />
-            <Icon name="sun" className="icon-sun h-5 w-5 text-yellow-500 transition-transform group-hover:rotate-45" />
+            <Icon name="moon" className="icon-moon h-5 w-5" />
+            <Icon name="sun" className="icon-sun h-5 w-5" />
           </button>
 
           {talk && (
@@ -86,7 +95,7 @@ export default function SiteNav({ activeSection, onNavigate }) {
               href={`#${talk.id}`}
               id="nav-contact-link"
               onClick={(event) => handleClick(talk.id, event)}
-              className="hidden items-center rounded-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-tertiary)] px-7 py-3 text-sm font-semibold tracking-wider text-white uppercase transition-all hover:scale-105 active:scale-95 sm:flex"
+              className="btn-accent hidden items-center rounded-full px-7 py-3 text-sm font-semibold tracking-wider uppercase sm:flex"
             >
               {talk.label}
             </a>
@@ -118,7 +127,11 @@ export default function SiteNav({ activeSection, onNavigate }) {
                 href={`#${item.id}`}
                 onClick={(event) => handleClick(item.id, event)}
                 aria-current={activeSection === item.id ? "true" : undefined}
-                className={item.cta ? "gradient-text" : "hover:text-[var(--accent-primary)]"}
+                className={
+                  activeSection === item.id || item.cta
+                    ? "text-[var(--accent-ink)]"
+                    : "hover:text-[var(--accent-ink)]"
+                }
               >
                 {item.label}
               </a>

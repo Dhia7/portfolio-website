@@ -14,10 +14,11 @@ export default function Hero({ onNavigate }) {
   const tiltCard = (event) => {
     const card = cardRef.current;
     if (!card) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = card.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - 0.5;
     const y = (event.clientY - rect.top) / rect.height - 0.5;
-    card.style.transform = `perspective(900px) rotateX(${(-y * 10).toFixed(2)}deg) rotateY(${(x * 12).toFixed(2)}deg) scale(1.04)`;
+    card.style.transform = `perspective(900px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
   };
 
   const resetCard = () => {
@@ -25,9 +26,10 @@ export default function Hero({ onNavigate }) {
   };
 
   return (
-    <section id="profile" className="flex min-h-screen items-center pt-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-16 px-6 md:grid-cols-2">
+    <section id="profile" className="flex items-start overflow-x-clip pt-24 pb-16 md:min-h-screen md:items-center md:pb-0">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-6 md:grid-cols-2 md:gap-16">
         <motion.div
+          className="order-2 md:order-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -35,20 +37,22 @@ export default function Hero({ onNavigate }) {
           <h2 className="text-label mb-4 font-semibold tracking-[0.2em] uppercase">
             {profile.role}
           </h2>
-          <h1 className="mb-8 text-left text-5xl leading-[1.05] font-bold sm:text-6xl lg:text-7xl">
-            <SplitText
-              text={profile.headlineLead}
-              tag="span"
-              textAlign="left"
-              splitType="chars"
-              delay={35}
-              rootMargin="0px"
-              className="pb-[0.12em]"
-              onLetterAnimationComplete={() => setLeadDone(true)}
-            />{" "}
+          <h1 className="mb-6 max-w-full text-left text-[clamp(2rem,8.2vw,2.75rem)] leading-[1.08] font-bold sm:mb-8 sm:text-5xl sm:leading-[1.05] md:text-6xl lg:text-7xl">
+            <span className="block">
+              <SplitText
+                text={profile.headlineLead}
+                tag="span"
+                textAlign="left"
+                splitType="chars"
+                delay={35}
+                rootMargin="0px"
+                className="pb-[0.12em]"
+                onLetterAnimationComplete={() => setLeadDone(true)}
+              />
+            </span>
             <MotionConfig reducedMotion="never">
               <motion.span
-                className="inline-block align-baseline"
+                className="block overflow-hidden py-[0.14em] leading-[1.2]"
                 initial={{ opacity: 0, y: 40 }}
                 animate={leadDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -64,16 +68,18 @@ export default function Hero({ onNavigate }) {
                   splitBy="characters"
                 />
               </motion.span>
-            </MotionConfig>{" "}
-            <SplitText
-              text={profile.headlineTail}
-              tag="span"
-              textAlign="left"
-              splitType="chars"
-              delay={35}
-              rootMargin="0px"
-              className="pb-[0.12em]"
-            />
+            </MotionConfig>
+            <span className="block">
+              <SplitText
+                text={profile.headlineTail}
+                tag="span"
+                textAlign="left"
+                splitType="chars"
+                delay={35}
+                rootMargin="0px"
+                className="pb-[0.12em]"
+              />
+            </span>
           </h1>
           <MotionConfig reducedMotion="never">
             <TextEffect
@@ -81,17 +87,23 @@ export default function Hero({ onNavigate }) {
               per="word"
               preset="fade-in-blur"
               delay={0.6}
-              className="text-copy mb-10 max-w-lg text-lg leading-relaxed sm:text-xl"
+              className="text-copy mb-8 max-w-lg text-base leading-relaxed sm:mb-10 sm:text-lg md:text-xl"
             >
               {profile.summary}
             </TextEffect>
           </MotionConfig>
-          <div className="flex flex-wrap gap-4">
+          <motion.div
+            className="flex flex-wrap gap-4"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            whileInView={{ clipPath: "inset(0 0 0% 0)" }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
             <a
               href="#work"
               id="hero-work-btn"
               onClick={(event) => onNavigate("work", event)}
-              className="rounded-xl bg-indigo-600 px-8 py-4 font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:-translate-y-1 hover:bg-indigo-500"
+              className="hover-zoom btn-accent rounded-xl px-8 py-4 font-bold"
             >
               View Projects
             </a>
@@ -99,28 +111,28 @@ export default function Hero({ onNavigate }) {
               href="#contact"
               id="hero-contact-btn"
               onClick={(event) => onNavigate("contact", event)}
-              className="glass-card rounded-xl px-8 py-4 font-bold transition-all hover:-translate-y-1"
+              className="hover-zoom btn-quiet glass-card rounded-xl px-8 py-4 font-bold"
             >
               Say Hello
             </a>
-          </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
-          className="relative"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="relative order-1 md:order-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
             ref={cardRef}
-            className="portrait-card relative mx-auto w-full max-w-[420px]"
+            className="portrait-card relative mx-auto w-full max-w-[240px] sm:max-w-[320px] md:max-w-[420px]"
             onMouseMove={tiltCard}
             onMouseLeave={resetCard}
           >
-            <div className="portrait-frame absolute -inset-4 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 opacity-20" />
-            <div className="portrait-frame-alt absolute -inset-4 rounded-full border border-[var(--border-color)]" />
-            <div className="portrait-float relative z-10 aspect-square w-full overflow-hidden rounded-full bg-[#252527] shadow-2xl">
+            <div className="absolute -inset-4 rounded-full bg-[var(--accent-fill)] opacity-20" />
+            <div className="absolute -inset-4 rounded-full border border-[var(--border-color)]" />
+            <div className="portrait-print relative z-10 aspect-square w-full overflow-hidden rounded-full bg-[#252527] shadow-2xl">
               <Image
                 src={profile.portrait}
                 alt={profile.name}
@@ -131,11 +143,11 @@ export default function Hero({ onNavigate }) {
                 className="object-contain object-center"
               />
             </div>
-            <div className="chip-bob glass-card absolute top-[8%] right-[6%] z-20 rounded-2xl p-4">
-              <Icon name="sparkles" className="h-8 w-8 text-yellow-400" />
+            <div className="chip-settle glass-card absolute top-[6%] right-[2%] z-20 rounded-xl p-2.5 md:rounded-2xl md:p-4">
+              <Icon name="sparkles" className="h-5 w-5 text-[var(--accent-ink)] md:h-8 md:w-8" />
             </div>
-            <div className="chip-pulse glass-card absolute bottom-[8%] left-[6%] z-20 rounded-2xl p-4">
-              <Icon name="code" className="h-8 w-8 text-blue-400" />
+            <div className="chip-settle chip-settle-late glass-card absolute bottom-[6%] left-[2%] z-20 rounded-xl p-2.5 md:rounded-2xl md:p-4">
+              <Icon name="code" className="h-5 w-5 text-[var(--accent-ink)] md:h-8 md:w-8" />
             </div>
           </div>
         </motion.div>

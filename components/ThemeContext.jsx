@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "light" ? "#FFFFFF" : "#0F1419");
+    if (meta) meta.setAttribute("content", theme === "light" ? "#FFFFFF" : "#1C1916");
   }, [theme]);
 
   const toggleTheme = () => {

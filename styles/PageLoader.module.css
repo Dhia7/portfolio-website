@@ -30,7 +30,7 @@
 .profileFrame {
   padding: 4px;
   border-radius: 999px;
-  background: linear-gradient(to top right, var(--accent-primary), var(--accent-tertiary));
+  background: var(--accent-fill);
 }
 
 .profileImage {
@@ -66,8 +66,8 @@
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 0.85rem;
-  background: linear-gradient(to top right, #6366f1, #ec4899);
-  color: #fff;
+  background: var(--accent-fill);
+  color: var(--accent-on);
   font-family: "Clash Grotesk", var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
@@ -111,7 +111,7 @@
   height: 100%;
   overflow: hidden;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+  background: var(--accent-fill);
 }
 
 .progressGlow {
